@@ -16,6 +16,12 @@ int shmid, msqid;
 /* The pointer to the shared memory */
 void* sharedMemPtr;
 
+// the key_t
+key_t key;
+
+// the flag needed for the queue
+int shmflg= IPC_CREAT | 0666;
+
 /**
  * Sets up the shared memory segment and message queue
  * @param shmid - the id of the allocated shared memory
@@ -37,14 +43,11 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 	 */
 
 	/* TODO: Get the id of the shared memory segment. The size of the segment must be SHARED_MEMORY_CHUNK_SIZE */
-	key_t key;
-	int shmflg= IPC_CREAT | 0666;
-	int size = SHARED_MEMORY_CHUNK_SIZE;
 
 	key = ftok("keyfile.txt", 'a');
 
 	// try to access shared memory
-	if ((shmid = shmget (key, size, shmflg)) < 0)
+	if ((shmid = shmget (key, SHARED_MEMORY_CHUNK_SIZE, shmflg)) < 0)
 	{
 		perror("shmget: shmget failed");
 		exit(1);
@@ -54,16 +57,18 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		(void) fprintf(stderr, "shmget: shmget returned %d\n", shmid);
 	}
 
+
+	/* TODO: Attach to the shared memory */
 	if((sharedMemPtr = shmat(shmid, NULL, 0)) == (char *) - 1)
 	{
 		perror("shmat");
 		exit(1);
 	}
 
-	/* TODO: Attach to the shared memory */
+
 	/* TODO: Attach to the message queue */
 	/* Store the IDs and the pointer to the shared memory region in the corresponding parameters */
-
+	msqid = msgget(key, shmflg);
 }
 
 /**
@@ -72,7 +77,6 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
  * @param shmid - the id of the shared memory segment
  * @param msqid - the id of the message queue
  */
-
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
 	/* TODO: Detach from shared memory */
@@ -114,11 +118,11 @@ void send(const char* fileName)
 			exit(-1);
 		}
 
-
 		/* TODO: Send a message to the receiver telling him that the data is ready
  		 * (message of type SENDER_DATA_TYPE)
  		 */
-
+		 msgsnd(msqid, sharedMemPtr, SHARED_MEMORY_CHUNK_SIZE, 0);
+		 
 		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
  		 * that he finished saving the memory chunk.
  		 */

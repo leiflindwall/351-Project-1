@@ -13,6 +13,12 @@
 /* The ids for the shared memory segment and the message queue */
 int shmid, msqid;
 
+// the key_t
+key_t key;
+
+// the flag needed for the queue
+int shmflg= IPC_CREAT | 0666;
+
 /* The pointer to the shared memory */
 void *sharedMemPtr;
 
@@ -41,14 +47,11 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 	 */
 
 	 /* TODO: Allocate a piece of shared memory. The size of the segment must be SHARED_MEMORY_CHUNK_SIZE. */
-	 key_t key;
- 	 int shmflg= IPC_CREAT | 0666;
- 	 int size = SHARED_MEMORY_CHUNK_SIZE;
 
  	 key = ftok("keyfile.txt", 'a');
 
  	 // try to access shared memory
- 	 if ((shmid = shmget (key, size, shmflg)) < 0)
+ 	 if ((shmid = shmget (key, SHARED_MEMORY_CHUNK_SIZE, shmflg)) < 0)
  	 {
  		 perror("shmget: shmget failed");
  		 exit(1);
@@ -66,13 +69,9 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		 exit(1);
 	 }
 
-
-
-
-
 	/* TODO: Create a message queue */
 	/* Store the IDs and the pointer to the shared memory region in the corresponding parameters */
-
+	msqid = msgget(key, shmflg);
 }
 
 

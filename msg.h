@@ -1,4 +1,4 @@
-/* The information type */ 
+/* The information type */
 
 #define SENDER_DATA_TYPE 1
 
@@ -14,15 +14,14 @@ struct message
 {
 	/* The message type */
 	long mtype;
-	
+
 	/* How many bytes in the message */
 	int size;
-	
+
 	/**
  	 * Prints the structure
  	 * @param fp - the file stream to print to
  	 */
-
 	void print(FILE* fp)
 	{
 		fprintf(fp, "%d %d", mtype, size);
