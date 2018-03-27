@@ -80,6 +80,11 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
 	/* TODO: Detach from shared memory */
+	printf("cleaning up...\n");
+
+	shmdt(sharedMemPtr);
+
+	printf("All done!\n");
 }
 
 /**
@@ -90,7 +95,6 @@ void send(const char* fileName)
 {
 	/* Open the file for reading */
 	FILE* fp = fopen(fileName, "r");
-
 
 	/* A buffer to store message we will send to the receiver. */
 	message sndMsg;
@@ -121,11 +125,29 @@ void send(const char* fileName)
 		/* TODO: Send a message to the receiver telling him that the data is ready
  		 * (message of type SENDER_DATA_TYPE)
  		 */
-		 msgsnd(msqid, sharedMemPtr, SHARED_MEMORY_CHUNK_SIZE, 0);
-		 
+		 //msgsnd(msqid, sharedMemPtr, SHARED_MEMORY_CHUNK_SIZE, 0);
+		 sndMsg.mtype = SENDER_DATA_TYPE;
+
+		 printf("sending message... \n");
+
+		 if(msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0) == -1)
+		 {
+			 perror("msgsnd");
+		 }
+
+		 printf("message sent successfully.\n");
+
 		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
  		 * that he finished saving the memory chunk.
  		 */
+
+		 printf("waiting for recv...\n");
+
+		 if(msgrcv(msqid, &rcvMsg, 0, RECV_DONE_TYPE, 0))
+		 {
+			 perror("msgrcv");
+			 exit(1);
+		 }
 	}
 
 
@@ -134,6 +156,17 @@ void send(const char* fileName)
  	  * sending a message of type SENDER_DATA_TYPE with size field set to 0.
 	  */
 
+		sndMsg.size = 0;
+		sndMsg.mtype = SENDER_DATA_TYPE;
+
+		printf("telling recv we are done...\n");
+
+		if(msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0) == -1)
+		{
+			perror("msgsnd");
+		}
+
+		printf("message sent successfully.\n");
 
 	/* Close the file */
 	fclose(fp);

@@ -108,8 +108,27 @@ void mainLoop()
  	 * there is no more data to send
  	 */
 
+   /* A buffer to store message we will send to the sender. */
+ 	message sndMsg;
+
+ 	/* A buffer to store message received from the sender. */
+ 	message rcvMsg;
+
+  msgSize = 1;
+
 	while(msgSize != 0)
 	{
+
+    printf("receiving message...\n");
+
+    if(msgrcv(msqid, &rcvMsg, sizeof(rcvMsg) - sizeof(long), SENDER_DATA_TYPE, 0) == -1)
+    {
+      perror("msgrcv");
+      exit(1);
+    }
+
+    msgSize = rcvMsg.size;
+
 		/* If the sender is not telling us that we are done, then get to work */
 		if(msgSize != 0)
 		{
@@ -118,11 +137,21 @@ void mainLoop()
 			{
 				perror("fwrite");
 			}
+      printf("memory written to file.\n");
 
 			/* TODO: Tell the sender that we are ready for the next file chunk.
  			 * I.e. send a message of type RECV_DONE_TYPE (the value of size field
  			 * does not matter in this case).
  			 */
+
+       sndMsg.mtype = RECV_DONE_TYPE;
+       sndMsg.size = 0;
+       printf("telling sender we are ready for the next chunk...\n");
+
+       if(msgsnd(msqid, &sndMsg, 0, 0) == -1)
+       {
+         perror("msgsnd");
+       }
 		}
 		/* We are done */
 		else
@@ -144,11 +173,17 @@ void mainLoop()
 
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
+  printf("cleaing up...\n");
 	/* TODO: Detach from shared memory */
+  shmdt(sharedMemPtr);
 
 	/* TODO: Deallocate the shared memory chunk */
+  shmctl(shmid, IPC_RMID, NULL);
 
 	/* TODO: Deallocate the message queue */
+  msgctl(msqid, IPC_RMID, NULL);
+
+  printf("All done!\n");
 }
 
 /**
@@ -178,6 +213,8 @@ int main(int argc, char** argv)
 	mainLoop();
 
 	/** TODO: Detach from shared memory segment, and deallocate shared memory and message queue (i.e. call cleanup) **/
+  /* Cleanup */
+	cleanUp(shmid, msqid, sharedMemPtr);
 
 	return 0;
 }
