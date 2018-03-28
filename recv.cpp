@@ -120,7 +120,7 @@ void mainLoop()
 	{
 
     printf("receiving message...\n");
-
+    // Error checking system call
     if(msgrcv(msqid, &rcvMsg, sizeof(rcvMsg) - sizeof(long), SENDER_DATA_TYPE, 0) == -1)
     {
       perror("msgrcv");
@@ -147,7 +147,7 @@ void mainLoop()
        sndMsg.mtype = RECV_DONE_TYPE;
        sndMsg.size = 0;
        printf("telling sender we are ready for the next chunk...\n");
-
+       // Error checking system call
        if(msgsnd(msqid, &sndMsg, 0, 0) == -1)
        {
          perror("msgsnd");
@@ -162,8 +162,6 @@ void mainLoop()
 	}
 }
 
-
-
 /**
  * Perfoms the cleanup functions
  * @param sharedMemPtr - the pointer to the shared memory
@@ -173,13 +171,16 @@ void mainLoop()
 
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
-  printf("cleaing up...\n");
+  printf("Cleaing up:\n");
+  printf("Detaching from shared memory...\n");
 	/* TODO: Detach from shared memory */
   shmdt(sharedMemPtr);
 
+  printf("Deallocating shared memory chunk...\n");
 	/* TODO: Deallocate the shared memory chunk */
   shmctl(shmid, IPC_RMID, NULL);
 
+  printf("Deallocating message queue...\n");
 	/* TODO: Deallocate the message queue */
   msgctl(msqid, IPC_RMID, NULL);
 
@@ -190,10 +191,10 @@ void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
  * Handles the exit signal
  * @param signal - the signal type
  */
-
 void ctrlCSignal(int signal)
 {
 	/* Free system V resources */
+  printf("\n");
 	cleanUp(shmid, msqid, sharedMemPtr);
 }
 
@@ -205,6 +206,7 @@ int main(int argc, char** argv)
  	 * queues and shared memory before exiting. You may add the cleaning functionality
  	 * in ctrlCSignal().
  	 */
+  //signal(SIGINT, ctrlCSignal);
 
 	/* Initialize */
 	init(shmid, msqid, sharedMemPtr);

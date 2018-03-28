@@ -57,7 +57,6 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		(void) fprintf(stderr, "shmget: shmget returned %d\n", shmid);
 	}
 
-
 	/* TODO: Attach to the shared memory */
 	if((sharedMemPtr = shmat(shmid, NULL, 0)) == (char *) - 1)
 	{
@@ -65,11 +64,11 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		exit(1);
 	}
 
-
 	/* TODO: Attach to the message queue */
 	/* Store the IDs and the pointer to the shared memory region in the corresponding parameters */
 	msqid = msgget(key, shmflg);
 }
+
 
 /**
  * Performs the cleanup functions
@@ -79,12 +78,20 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
  */
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
+	printf("Cleaing up:\n");
+  printf("Detaching from shared memory...\n");
 	/* TODO: Detach from shared memory */
-	printf("cleaning up...\n");
+  shmdt(sharedMemPtr);
 
-	shmdt(sharedMemPtr);
+  printf("Deallocating shared memory chunk...\n");
+	/* TODO: Deallocate the shared memory chunk */
+  shmctl(shmid, IPC_RMID, NULL);
 
-	printf("All done!\n");
+  printf("Deallocating message queue...\n");
+	/* TODO: Deallocate the message queue */
+  msgctl(msqid, IPC_RMID, NULL);
+
+  printf("All done!\n");
 }
 
 /**

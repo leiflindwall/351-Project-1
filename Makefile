@@ -15,3 +15,4 @@ recv.o: recv.cpp msg.h
 clean:
 	rm -rf *.o recv
 	rm -rf *.o sender
+	rm -rf recvfile
