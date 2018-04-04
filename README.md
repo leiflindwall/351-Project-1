@@ -9,7 +9,7 @@ Alexander Lavrov alavrov@csu.fullerton.edu
 
 Marc Liander Reyes mlcr@csu.fullerton.edu
 
-Trung Ngo 
+Trung Ngo ndtrung95@csu.fullerton.edu
 
 
 Instructions:
