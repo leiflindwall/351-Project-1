@@ -4,6 +4,9 @@ Inter-Process Communications Assignment
 Group Members:
 
 Michael Lindwall michaellindwall@csu.fullerton.edu
+Alexander Lavrov alavrov@csu.fullerton.edu
+Marc Liander Reyes mlcr@csu.fullerton.edu
+Trung Ngo 
 
 
 Instructions:
