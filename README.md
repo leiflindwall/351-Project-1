@@ -11,7 +11,6 @@ Marc Liander Reyes mlcr@csu.fullerton.edu
 
 Trung Ngo ndtrung95@csu.fullerton.edu
 
-
 Instructions:
 
 This project was written in C/C++ and is meant to be run in a UNIX-style
@@ -44,3 +43,7 @@ what changes and progress were made.  Michael and Marc worked out the sender
 process and Alexander and Trung tackled the sender process. After the project
 was fleshed out, Alexander created the design document illustrating the logical
  flow of the two processes.
+
+Extra Credit: N/A
+
+Special Notes: N/A
