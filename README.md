@@ -1,4 +1,4 @@
-# 351-Project-1
+# 351-02-Project-1
 Inter-Process Communications Assignment
 
 Group Members:
@@ -37,4 +37,10 @@ command line terminal that supports GCC, Makefiles, and command-line arguments.
 
 Team Collaboration:
 
-Alexander Lavrov - Design of Assignment 1
+We collaborated on this project by using a Github repository.  Michael began the
+project by creating the initial commit.  From there, whoever downloaded the
+project and made progress pushed to the master branch with comments indicating
+what changes and progress were made.  Michael and Marc worked out the sender
+process and Alexander and Trung tackled the sender process. After the project
+was fleshed out, Alexander created the design document illustrating the logical
+ flow of the two processes.

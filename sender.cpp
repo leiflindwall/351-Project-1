@@ -132,31 +132,27 @@ void send(const char* fileName)
 		/* TODO: Send a message to the receiver telling him that the data is ready
  		 * (message of type SENDER_DATA_TYPE)
  		 */
-		 //msgsnd(msqid, sharedMemPtr, SHARED_MEMORY_CHUNK_SIZE, 0);
 		 sndMsg.mtype = SENDER_DATA_TYPE;
 
 		 printf("sending message... \n");
-
+		 // Error checking system call
 		 if(msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0) == -1)
 		 {
 			 perror("msgsnd");
 		 }
-
 		 printf("message sent successfully.\n");
 
 		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
  		 * that he finished saving the memory chunk.
  		 */
-
 		 printf("waiting for recv...\n");
-
+		 // Error checking system call
 		 if(msgrcv(msqid, &rcvMsg, 0, RECV_DONE_TYPE, 0))
 		 {
 			 perror("msgrcv");
 			 exit(1);
 		 }
 	}
-
 
 	/** TODO: once we are out of the above loop, we have finished sending the file.
  	  * Lets tell the receiver that we have nothing more to send. We will do this by
@@ -167,12 +163,11 @@ void send(const char* fileName)
 		sndMsg.mtype = SENDER_DATA_TYPE;
 
 		printf("telling recv we are done...\n");
-
+		// Error checking system call
 		if(msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0) == -1)
 		{
 			perror("msgsnd");
 		}
-
 		printf("message sent successfully.\n");
 
 	/* Close the file */
