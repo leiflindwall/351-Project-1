@@ -152,6 +152,7 @@ void mainLoop()
        {
          perror("msgsnd");
        }
+       printf("message received by sender.\n");
 		}
 		/* We are done */
 		else

@@ -69,7 +69,6 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 	msqid = msgget(key, shmflg);
 }
 
-
 /**
  * Performs the cleanup functions
  * @param sharedMemPtr - the pointer to the shared memory
@@ -135,7 +134,7 @@ void send(const char* fileName)
 		 sndMsg.mtype = SENDER_DATA_TYPE;
 
 		 printf("sending message... \n");
-		 // Error checking system call
+		 // Error checking system call msgsnd
 		 if(msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0) == -1)
 		 {
 			 perror("msgsnd");
@@ -152,6 +151,7 @@ void send(const char* fileName)
 			 perror("msgrcv");
 			 exit(1);
 		 }
+		 printf("message received by recv.\n");
 	}
 
 	/** TODO: once we are out of the above loop, we have finished sending the file.
@@ -172,7 +172,6 @@ void send(const char* fileName)
 
 	/* Close the file */
 	fclose(fp);
-
 }
 
 
